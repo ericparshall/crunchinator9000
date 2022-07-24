@@ -18,5 +18,13 @@ module Crunchinator9000
     #
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
+
+    config.after_initialize do
+      PendingJob.delete_all rescue nil
+    end
+
+    config.hosts.clear
+
+    config.active_job.queue_adapter = :sidekiq
   end
 end

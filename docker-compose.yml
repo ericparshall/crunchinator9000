@@ -9,10 +9,11 @@ services:
     environment:
       - POSTGRES_PASSWORD=postgres
   api:
+#    build: ../the645test
     build: https://github.com/ericparshall/the645test.git
     image: the645test
-    command: bash -c "rails db:setup && rails s -p 3000 -b '0.0.0.0'"
-#    command: bundle exec rails s -p 3000 -b '0.0.0.0'
+#    command: bash -c "rails db:setup && rails s -p 3000 -b '0.0.0.0'"
+    command: bundle exec rails s -p 3000 -b '0.0.0.0'
     ports:
       - "3000:3000"
     environment:
@@ -21,6 +22,7 @@ services:
       DB_PASSWORD: postgres
       DISABLE_FILE_WATCHER: true
       RAILS_LOG_TO_STDOUT: true
+      RAILS_MAX_THREADS: 25
     depends_on:
       - db
   app:
@@ -38,9 +40,28 @@ services:
       DB_PASSWORD: postgres
       RAILS_LOG_TO_STDOUT: true
       CRUNCHBASE_URL: http://api:3000
+      REDIS_URL: redis://queue:6379
     depends_on:
       - db
       - api
+  worker:
+    image: crunchinator9000
+    command: bundle exec sidekiq
+    volumes:
+      - .:/app
+    environment:
+      DB_HOST: db
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      RAILS_LOG_TO_STDOUT: true
+      CRUNCHBASE_URL: http://api:3000
+      REDIS_URL: redis://queue:6379
+    depends_on:
+      - db
+      - queue
+      - app
+  queue:
+    image: redis
 volumes:
   crunchbase-data:
     name: crunchbase-postgres-data

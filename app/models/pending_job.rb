@@ -1,0 +1,2 @@
+class PendingJob < ApplicationRecord
+end

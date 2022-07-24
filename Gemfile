@@ -70,3 +70,9 @@ group :test do
   gem "selenium-webdriver"
   gem "webdrivers"
 end
+
+gem "simple_command", "~> 1.0"
+
+gem "kaminari", "~> 1.2"
+
+gem "sidekiq", "~> 6.5"

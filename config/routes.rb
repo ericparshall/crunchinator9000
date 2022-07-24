@@ -3,4 +3,11 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   root "home#index"
+
+  resources :companies do
+    collection do
+      post :refresh
+      post :delete_all
+    end
+  end
 end

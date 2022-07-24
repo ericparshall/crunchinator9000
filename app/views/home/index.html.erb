@@ -1,13 +1,76 @@
 <nav class="navbar navbar-expand bg-light mt-2">
   <div class="container-fluid">
     <span class="navbar-brand">Companies</span>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#toolbar">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="toolbar">
-      <div data-controller="company-search">
-
+    <ul></ul>
+    <div class="d-flex">
+      <div data-controller="company-search" class="m-2">
+        <%= form_with(url: delete_all_companies_path, method: :post, data: { "turbo-frame": "companies", "company-search-target": "theForm" }) do |f| %>
+          <button type="button" class="btn btn-danger"
+                  data-company-search-target="reloadButton"
+                  data-action="company-search#reload">
+            <i class="bi bi-trash"></i>
+            Reset
+          </button>
+        <% end %>
+      </div>
+      <div data-controller="company-search" class="m-2">
+        <%= form_with(url: refresh_companies_path, method: :post, data: { "turbo-frame": "companies", "company-search-target": "theForm" }) do |f| %>
+          <button type="button" class="btn btn-primary"
+                  data-company-search-target="reloadButton"
+                  data-action="company-search#reload">
+            <i class="bi bi-arrow-clockwise"></i>
+            Load
+          </button>
+        <% end %>
       </div>
     </div>
   </div>
 </nav>
+
+<turbo-frame id="companies">
+  <% if PendingJob.exists?(name: "LoadCompanies") %>
+    <div class="alert alert-warning mt-2 mb-2" role="alert">
+      Companies are still being loaded. Refresh the page to see the latest data.
+    </div>
+  <% end %>
+  <% if Company.exists?(fully_initialized: false) %>
+    <div class="alert alert-warning mt-2 mb-2" role="alert">
+      Company details are still being initialized. Refresh the page to see the latest data.
+    </div>
+  <% end %>
+
+  <table class="table table-striped">
+    <thead>
+    <tr>
+      <th>Name</th>
+      <th>Funding Rounds</th>
+      <th>Funded Amount</th>
+      <th>Funding Types</th>
+    </tr>
+    </thead>
+    <tbody>
+    <% @companies.each do |company| %>
+      <tr>
+        <td>
+          <%= company.name %>
+          <% unless company.fully_initialized? %>
+            <span class="fw-lighter">
+              (company data is still being initialized)
+            </span>
+          <% end %>
+        </td>
+        <td>
+          <%= company.funding_rounds.count %>
+        </td>
+        <td>
+          $<%= company.funding_rounds.map(&:funded_usd).sum %>
+        </td>
+        <td>
+          <%= company.funding_rounds.map(&:funding_round_type).join(", ") %>
+        </td>
+      </tr>
+    <% end %>
+    </tbody>
+  </table>
+  <%= paginate @companies %>
+</turbo-frame>
