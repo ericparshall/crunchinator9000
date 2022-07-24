@@ -36,8 +36,8 @@ services:
       DB_HOST: db
       DB_USERNAME: postgres
       DB_PASSWORD: postgres
-      DISABLE_FILE_WATCHER: true
       RAILS_LOG_TO_STDOUT: true
+      CRUNCHBASE_URL: http://api:3000
     depends_on:
       - db
       - api

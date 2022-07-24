@@ -12,3 +12,5 @@ Run this application in your development environment using `docker-compose`:
 ```
 docker-compose up --build -d
 ```
+
+Then, open your browser to [http://localhost:9000](http://localhost:9000)
