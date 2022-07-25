@@ -1,0 +1,51 @@
+<turbo-frame id="company-form">
+  <div data-controller="company-form">
+    <div class="modal" tabindex="-1" data-company-form-target="modal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Edit Company</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <%= form_with model: @company, data: { "turbo-frame": "_top" } do |f| %>
+            <div class="modal-body">
+                <div class="mb-3">
+                  <%= f.label :name, class: "form-label" %>
+                  <%= f.text_field :name, class: "form-control" %>
+                </div>
+
+                <p class="h6 mb-1">Funding Rounds:</p>
+
+                <div data-company-form-target="roundsContainer">
+                  <%= f.fields_for :funding_rounds do |funding_round_form| %>
+                    <hr class="m-2" />
+                    <div class="input-group input-group-sm mb-1">
+                      <span class="input-group-text" id="inputGroup-sizing-sm">Type</span>
+                      <%= funding_round_form.text_field :funding_round_type, class: "form-control" %>
+                    </div>
+                    <div class="input-group input-group-sm mb-1">
+                      <span class="input-group-text">Date</span>
+                      <%= funding_round_form.text_field :funded_date, class: "form-control", type: "date" %>
+                    </div>
+                    <div class="input-group input-group-sm mb-1">
+                      <span class="input-group-text">Amount</span>
+                      <%= funding_round_form.text_field :funded_usd , class: "form-control" %>
+                    </div>
+                    <div class="input-group input-group-sm mb-1">
+                      <span class="form-check-label me-2">Delete?</span>
+                      <%= funding_round_form.check_box :_destroy, class: "form-check-input" %>
+                    </div>
+                  <% end %>
+                </div>
+              <button class="btn btn-sm btn-success mt-3" data-action="company-form#addRound">Add</button>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <%= f.submit "Save Changes", class: "btn btn-primary" %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</turbo-frame>

@@ -25,6 +25,7 @@ services:
       RAILS_MAX_THREADS: 25
     depends_on:
       - db
+    restart: always
   app:
     build: .
     image: crunchinator9000
@@ -44,6 +45,7 @@ services:
     depends_on:
       - db
       - api
+    restart: always
   worker:
     image: crunchinator9000
     command: bundle exec sidekiq
@@ -60,8 +62,10 @@ services:
       - db
       - queue
       - app
+    restart: always
   queue:
     image: redis
+    restart: always
 volumes:
   crunchbase-data:
     name: crunchbase-postgres-data

@@ -19,7 +19,7 @@
                   data-company-search-target="reloadButton"
                   data-action="company-search#reload">
             <i class="bi bi-arrow-clockwise"></i>
-            Load
+            Load Companies
           </button>
         <% end %>
       </div>
@@ -46,6 +46,7 @@
       <th>Funding Rounds</th>
       <th>Funded Amount</th>
       <th>Funding Types</th>
+      <th></th>
     </tr>
     </thead>
     <tbody>
@@ -60,17 +61,24 @@
           <% end %>
         </td>
         <td>
-          <%= company.funding_rounds.count %>
+          <%= company.funding_rounds.length %>
         </td>
         <td>
           $<%= company.funding_rounds.map(&:funded_usd).sum %>
         </td>
         <td>
-          <%= company.funding_rounds.map(&:funding_round_type).join(", ") %>
+          <%= company.funding_rounds.map(&:funding_round_type).uniq.join(", ") %>
+        </td>
+        <td>
+          <%= link_to "Edit", edit_company_path(company), class: "btn btn-primary", data: { "turbo-frame": "company-form" } %>
         </td>
       </tr>
     <% end %>
     </tbody>
   </table>
   <%= paginate @companies %>
+</turbo-frame>
+
+<turbo-frame id="company-form">
+
 </turbo-frame>
