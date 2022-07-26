@@ -47,6 +47,7 @@ services:
       - api
     restart: always
   worker:
+    build: .
     image: crunchinator9000
     command: bundle exec sidekiq
     volumes:
